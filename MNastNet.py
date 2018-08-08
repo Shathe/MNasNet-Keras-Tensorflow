@@ -34,14 +34,13 @@ def MNasNet(n_classes=1000, input_shape=(224, 224, 3)):
 	x = MBConv_idskip(x, 320, 3, padding='same', strides=1, filters_multiplier=6)
 
 	x = layers.GlobalAveragePooling2D()(x)
-	# x = layers.Flatten()(x)
 	predictions = layers.Dense(n_classes, activation='softmax')(x)
 	return models.Model(inputs=inputs, outputs=predictions)
 
 
 
 
-
+# Convolution with batch normalization
 def conv_bn(x, filters, kernel_size, padding='same', strides=1):
 
 	x = layers.Conv2D(filters, kernel_size, strides=strides, padding=padding, use_bias=False)(x) # use_bias=False,
@@ -49,6 +48,7 @@ def conv_bn(x, filters, kernel_size, padding='same', strides=1):
 	x = layers.Activation('relu')(x)
 	return x
 
+# Depth-wise Separable Convolution with batch normalization 
 def sepConv_bn(x, filters, kernel_size, padding='same', strides=1):
 
 	x = layers.SeparableConv2D(filters, kernel_size, strides=strides, padding=padding, use_bias=False)(x) # use_bias=False,
@@ -58,12 +58,12 @@ def sepConv_bn(x, filters, kernel_size, padding='same', strides=1):
 
 def sepConv_bn_noskip(x, filters, kernel_size, padding='same', strides=1):
 
-
 	x = sepConv_bn(x, filters, kernel_size, padding=padding, strides=strides)
 	x = conv_bn(x, filters, 1, padding=padding, strides=1)
 
 	return x
 
+# Inverted bottleneck block with identity skip connection
 def MBConv_idskip(x_input, filters, kernel_size, padding='same', strides=1, filters_multiplier=1):
 
 	x = conv_bn(x_input, filters*filters_multiplier, 1, padding=padding, strides=1)
