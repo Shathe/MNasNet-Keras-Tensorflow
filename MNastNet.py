@@ -44,7 +44,7 @@ def MNasNet(n_classes=1000, input_shape=(224, 224, 3)):
 def conv_bn(x, filters, kernel_size, padding='same', strides=1):
 
 	x = layers.Conv2D(filters, kernel_size, strides=strides, padding=padding, use_bias=False)(x) # use_bias=False,
-	x = layers.BatchNormalization()(x) # scale=False,
+	x = layers.BatchNormalization()(x)  
 	x = layers.Activation('relu')(x)
 	return x
 
@@ -52,7 +52,7 @@ def conv_bn(x, filters, kernel_size, padding='same', strides=1):
 def sepConv_bn(x, filters, kernel_size, padding='same', strides=1):
 
 	x = layers.SeparableConv2D(filters, kernel_size, strides=strides, padding=padding, use_bias=False)(x) # use_bias=False,
-	x = layers.BatchNormalization()(x) # scale=False,
+	x = layers.BatchNormalization()(x)  
 	x = layers.Activation('relu')(x)
 	return x
 
