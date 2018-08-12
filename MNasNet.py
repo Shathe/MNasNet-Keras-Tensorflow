@@ -1,8 +1,6 @@
 from tensorflow.keras import optimizers, layers, models, callbacks, utils, preprocessing
 from tensorflow.keras  import backend as K
-import glob
 import tensorflow as tf
-import cv2
 import numpy as np
 
 
