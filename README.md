@@ -8,7 +8,7 @@ Accordint to the paper: [MnasNet: Platform-Aware Neural Architecture Search for 
 * Tensorflow-gpu 1.10
 
 ## Try it
-Try it on the MNist dataset! just execute:
+Try it on the MNIST dataset! just execute:
 ```
 python train.py
 ```
