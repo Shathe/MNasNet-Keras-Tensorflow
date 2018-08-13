@@ -11,7 +11,7 @@ x_train = np.expand_dims(x_train, axis=3)
 x_test = np.expand_dims(x_test, axis=3)
 
 # Load model
-model = Mnasnet.MNasNet(input_shape=(28, 28, 1))
+model = Mnasnet.MnasNet(input_shape=(28, 28, 1))
 
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',

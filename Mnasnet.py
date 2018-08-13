@@ -4,7 +4,7 @@ import tensorflow as tf
 import numpy as np
 
 
-def MNasNet(n_classes=1000, input_shape=(224, 224, 3), alpha=1):
+def MnasNet(n_classes=1000, input_shape=(224, 224, 3), alpha=1):
 	inputs = layers.Input(shape=input_shape)
 
 	x = conv_bn(inputs, 32, 3,   strides=2)
@@ -163,7 +163,7 @@ def _make_divisible(v, divisor=8, min_value=None):
 
 if __name__ == "__main__":
 
-	model = MNasNet(alpha=1)
+	model = MnasNet(alpha=1)
 	model.compile(optimizer='adam',
 				  loss='sparse_categorical_crossentropy',
 				  metrics=['accuracy'])
