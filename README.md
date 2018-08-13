@@ -18,4 +18,4 @@ For compiling the model MNAsNet with 4.2M params, execute :
 python MNastNet.py
 ```
 
-![alt text](https://github.com/Shathe/MNasNet-Keras-Tensorflow/raw/master/network.png)
+![alt text](https://github.com/Shathe/MNasNet-Keras-Tensorflow/raw/master/mnasnet.png)

@@ -18,7 +18,7 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 model.summary()
 # Train it
-model.fit(x_train, y_train, epochs=20)
+model.fit(x_train, y_train, epochs=1)
 # Evaluate it
 loss, acc = model.evaluate(x_test, y_test)
 print('Accuracy of: ' + str(acc*100.) + '%')
