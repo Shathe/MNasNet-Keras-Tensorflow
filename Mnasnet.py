@@ -10,31 +10,31 @@ def MnasNet(n_classes=1000, input_shape=(224, 224, 3), alpha=1):
 	x = conv_bn(inputs, 32, 3,   strides=2)
 	x = sepConv_bn_noskip(x, 16, 3,  strides=1) 
 	# MBConv3 3x3
-	x = MBConv_idskip(x, 24, 3,  strides=2, filters_multiplier=3, alpha=alpha)
-	x = MBConv_idskip(x, 24, 3,  strides=1, filters_multiplier=3, alpha=alpha)
-	x = MBConv_idskip(x, 24, 3,  strides=1, filters_multiplier=3, alpha=alpha)
+	x = MBConv_idskip(x, filters=24, kernel_size=3,  strides=2, filters_multiplier=3, alpha=alpha)
+	x = MBConv_idskip(x, filters=24, kernel_size=3,  strides=1, filters_multiplier=3, alpha=alpha)
+	x = MBConv_idskip(x, filters=24, kernel_size=3,  strides=1, filters_multiplier=3, alpha=alpha)
 	# MBConv3 5x5
 	
-	x = MBConv_idskip(x, 40, 5,  strides=2, filters_multiplier=3, alpha=alpha)
-	x = MBConv_idskip(x, 40, 5,  strides=1, filters_multiplier=3, alpha=alpha)
-	x = MBConv_idskip(x, 40, 5,  strides=1, filters_multiplier=3, alpha=alpha)
+	x = MBConv_idskip(x, filters=40, kernel_size=5,  strides=2, filters_multiplier=3, alpha=alpha)
+	x = MBConv_idskip(x, filters=40, kernel_size=5,  strides=1, filters_multiplier=3, alpha=alpha)
+	x = MBConv_idskip(x, filters=40, kernel_size=5,  strides=1, filters_multiplier=3, alpha=alpha)
 	# MBConv6 5x5
-	x = MBConv_idskip(x, 80, 5,  strides=2, filters_multiplier=6, alpha=alpha)
-	x = MBConv_idskip(x, 80, 5,  strides=1, filters_multiplier=6, alpha=alpha)
-	x = MBConv_idskip(x, 80, 5,  strides=1, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=80, kernel_size=5,  strides=2, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=80, kernel_size=5,  strides=1, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=80, kernel_size=5,  strides=1, filters_multiplier=6, alpha=alpha)
 	# MBConv6 3x3
-	x = MBConv_idskip(x, 96, 3,  strides=1, filters_multiplier=6, alpha=alpha)
-	x = MBConv_idskip(x, 96, 3,  strides=1, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=96, kernel_size=3,  strides=1, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=96, kernel_size=3,  strides=1, filters_multiplier=6, alpha=alpha)
 	# MBConv6 5x5
-	x = MBConv_idskip(x, 192, 5,  strides=2, filters_multiplier=6, alpha=alpha)
-	x = MBConv_idskip(x, 192, 5,  strides=1, filters_multiplier=6, alpha=alpha)
-	x = MBConv_idskip(x, 192, 5,  strides=1, filters_multiplier=6, alpha=alpha)
-	x = MBConv_idskip(x, 192, 5,  strides=1, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=192, kernel_size=5,  strides=2, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=192, kernel_size=5,  strides=1, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=192, kernel_size=5,  strides=1, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=192, kernel_size=5,  strides=1, filters_multiplier=6, alpha=alpha)
 	# MBConv6 3x3
-	x = MBConv_idskip(x, 320, 3,  strides=1, filters_multiplier=6, alpha=alpha)
+	x = MBConv_idskip(x, filters=320, kernel_size=3,  strides=1, filters_multiplier=6, alpha=alpha)
 
 	# FC + POOL
-	x = conv_bn(x,_make_divisible(1152*alpha), 1,   strides=1)
+	x = conv_bn(x, filters=_make_divisible(1152*alpha), kernel_size=1,   strides=1)
 	x = layers.GlobalAveragePooling2D()(x)
 	predictions = layers.Dense(n_classes, activation='softmax')(x)
 
@@ -135,9 +135,9 @@ def MBConv_idskip(x_input, filters, kernel_size,  strides=1, filters_multiplier=
 	depthwise_conv_filters = _make_divisible(x_input.shape[3].value) 
 	pointwise_conv_filters = _make_divisible(filters * alpha)
 
-	x = conv_bn(x_input, depthwise_conv_filters * filters_multiplier, kernel_size=1, strides=1)
+	x = conv_bn(x_input, filters=depthwise_conv_filters * filters_multiplier, kernel_size=1, strides=1)
 	x = depthwiseSepConv_bn(x, depth_multiplier=1, kernel_size=kernel_size, strides=strides)
-	x = conv_bn(x, pointwise_conv_filters, kernel_size=1, strides=1, activation=False)
+	x = conv_bn(x, filters=pointwise_conv_filters, kernel_size=1, strides=1, activation=False)
 
 	# Residual connection if possible
 	if strides==1 and x.shape[3] == x_input.shape[3]:
