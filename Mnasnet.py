@@ -14,7 +14,6 @@ def MnasNet(n_classes=1000, input_shape=(224, 224, 3), alpha=1):
 	x = MBConv_idskip(x, filters=24, kernel_size=3,  strides=1, filters_multiplier=3, alpha=alpha)
 	x = MBConv_idskip(x, filters=24, kernel_size=3,  strides=1, filters_multiplier=3, alpha=alpha)
 	# MBConv3 5x5
-	
 	x = MBConv_idskip(x, filters=40, kernel_size=5,  strides=2, filters_multiplier=3, alpha=alpha)
 	x = MBConv_idskip(x, filters=40, kernel_size=5,  strides=1, filters_multiplier=3, alpha=alpha)
 	x = MBConv_idskip(x, filters=40, kernel_size=5,  strides=1, filters_multiplier=3, alpha=alpha)
