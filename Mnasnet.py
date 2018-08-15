@@ -1,7 +1,9 @@
-from tensorflow.keras import optimizers, layers, models, callbacks, utils, preprocessing
+from tensorflow.keras import optimizers, layers, models, callbacks, utils, preprocessing, regularizers
 from tensorflow.keras  import backend as K
 import tensorflow as tf
 import numpy as np
+
+
 
 
 def MnasNet(n_classes=1000, input_shape=(224, 224, 3), alpha=1):
@@ -61,8 +63,9 @@ def conv_bn(x, filters, kernel_size,  strides=1, alpha=1, activation=True):
 		Output tensor.
 	"""
 	filters = _make_divisible(filters * alpha)
-	x = layers.Conv2D(filters, kernel_size, strides=strides, padding='same', use_bias=False)(x) # use_bias=False,
-	x = layers.BatchNormalization()(x)  
+	x = layers.Conv2D(filters, kernel_size, strides=strides, padding='same', use_bias=False,
+										kernel_regularizer=regularizers.l2(l=0.0003))(x) # use_bias=False,
+	x = layers.BatchNormalization(epsilon=1e-3, momentum=0.999)(x)  
 	if activation:
 		x = layers.ReLU(max_value=6)(x)
 	return x
@@ -70,7 +73,8 @@ def conv_bn(x, filters, kernel_size,  strides=1, alpha=1, activation=True):
 # Depth-wise Separable Convolution with batch normalization 
 def depthwiseSepConv_bn(x, depth_multiplier, kernel_size,  strides=1):
 	"""Depthwise separable convolution 
-	Depthwise Separable convolutions consists in performing just the first step in a depthwise spatial convolution (which acts on each input channel separately).
+	Depthwise Separable convolutions consists in performing just the first step in a depthwise spatial convolution 
+	(which acts on each input channel separately).
 	
 	This function defines a 2D Depthwise separable convolution operation with BN and relu6.
 	# Arguments
@@ -86,8 +90,9 @@ def depthwiseSepConv_bn(x, depth_multiplier, kernel_size,  strides=1):
 		Output tensor.
 	"""
 
-	x = layers.DepthwiseConv2D(kernel_size, strides=strides, depth_multiplier=depth_multiplier, padding='same', use_bias=False)(x)  
-	x = layers.BatchNormalization()(x)  
+	x = layers.DepthwiseConv2D(kernel_size, strides=strides, depth_multiplier=depth_multiplier, padding='same',
+										use_bias=False, kernel_regularizer=regularizers.l2(l=0.0003))(x)  
+	x = layers.BatchNormalization(epsilon=1e-3, momentum=0.999)(x)  
 	x = layers.ReLU(max_value=6)(x)
 	return x
 
