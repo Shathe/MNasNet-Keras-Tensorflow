@@ -9,8 +9,8 @@ import numpy as np
 def MnasNet(n_classes=1000, input_shape=(224, 224, 3), alpha=1):
 	inputs = layers.Input(shape=input_shape)
 
-	x = conv_bn(inputs, 32, 3,   strides=2)
-	x = sepConv_bn_noskip(x, 16, 3,  strides=1) 
+	x = conv_bn(inputs, 32*alpha, 3,   strides=2)
+	x = sepConv_bn_noskip(x, 16*alpha, 3,  strides=1) 
 	# MBConv3 3x3
 	x = MBConv_idskip(x, filters=24, kernel_size=3,  strides=2, filters_multiplier=3, alpha=alpha)
 	x = MBConv_idskip(x, filters=24, kernel_size=3,  strides=1, filters_multiplier=3, alpha=alpha)
@@ -35,7 +35,7 @@ def MnasNet(n_classes=1000, input_shape=(224, 224, 3), alpha=1):
 	x = MBConv_idskip(x, filters=320, kernel_size=3,  strides=1, filters_multiplier=6, alpha=alpha)
 
 	# FC + POOL
-	x = conv_bn(x, filters=_make_divisible(1152*alpha), kernel_size=1,   strides=1)
+	x = conv_bn(x, filters=1152*alpha, kernel_size=1,   strides=1)
 	x = layers.GlobalAveragePooling2D()(x)
 	predictions = layers.Dense(n_classes, activation='softmax')(x)
 
