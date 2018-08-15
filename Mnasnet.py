@@ -167,9 +167,6 @@ def _make_divisible(v, divisor=8, min_value=None):
 
 if __name__ == "__main__":
 
-	model = MnasNet(alpha=1)
-	model.compile(optimizer='adam',
-				  loss='sparse_categorical_crossentropy',
-				  metrics=['accuracy'])
+	model = MnasNet()
+	model.compile(optimizer='adam')
 	model.summary()
-
