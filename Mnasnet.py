@@ -63,8 +63,8 @@ def conv_bn(x, filters, kernel_size,  strides=1, alpha=1, activation=True):
 		Output tensor.
 	"""
 	filters = _make_divisible(filters * alpha)
-	x = layers.Conv2D(filters=filters, kernel_size=kernel_size, strides=strides, padding='same', use_bias=False,
-										kernel_regularizer=regularizers.l2(l=0.0003))(x) # use_bias=False,
+	x = layers.Conv2D(filters=filters, kernel_size=kernel_size, strides=strides, padding='same',
+									use_bias=False, kernel_regularizer=regularizers.l2(l=0.0003))(x)
 	x = layers.BatchNormalization(epsilon=1e-3, momentum=0.999)(x)  
 	if activation:
 		x = layers.ReLU(max_value=6)(x)
@@ -90,8 +90,8 @@ def depthwiseSepConv_bn(x, depth_multiplier, kernel_size,  strides=1):
 		Output tensor.
 	"""
 
-	x = layers.DepthwiseConv2D(kernel_size=kernel_size, strides=strides, depth_multiplier=depth_multiplier, padding='same',
-										use_bias=False, kernel_regularizer=regularizers.l2(l=0.0003))(x)  
+	x = layers.DepthwiseConv2D(kernel_size=kernel_size, strides=strides, depth_multiplier=depth_multiplier,
+									padding='same', use_bias=False, kernel_regularizer=regularizers.l2(l=0.0003))(x)  
 	x = layers.BatchNormalization(epsilon=1e-3, momentum=0.999)(x)  
 	x = layers.ReLU(max_value=6)(x)
 	return x
@@ -172,3 +172,4 @@ if __name__ == "__main__":
 				  loss='sparse_categorical_crossentropy',
 				  metrics=['accuracy'])
 	model.summary()
+
