@@ -100,40 +100,11 @@ if __name__ == "__main__":
 	train(dset_train, model, epochs=epochs)
 	test(dset_test, model)
 
-
-
+	'''
+	You can olso optimize with only:
+	optimizer.minimize(lambda: loss_function(model, x, y, training=True))
 	
-
-	# OPTION 2 TRAIN
-	'''
-	for epoch in xrange(epochs):
-		print('epoch: '+ str(epoch))
-		for x, y in dset_train: # for every batch
-			optimizer.minimize(lambda: loss_function(model, x, y, training=True))
-	'''
-
-
-	
-	# OTHER OPTION TRAIN AND TEST: COMMON KERAS CODE
-	'''
+	or you can build the Keras model:
 	model.compile(optimizer=tf.train.AdamOptimizer(0.001), loss='categorical_crossentropy', metrics=['accuracy'])
-
-	# TF Keras tries to use entire dataset to determine shape without this step when using .fit()
-	# Fix = Use exactly one sample from the provided input dataset to determine input/output shape/s for the model
-	dummy_x = tf.zeros((1, image_size, image_size, 1))
-	model._set_inputs(dummy_x)
-	#model.summary()
-
-	# train
-	model.fit(x_train, y_train_ohe, batch_size=batch_size, epochs=epochs,
-			  validation_data=(x_test, y_test_ohe), verbose=1)
-
-	# evaluate on test set
-	scores = model.evaluate(x_test, y_test_ohe, batch_size, verbose=1)
-	print("Final test loss and accuracy :", scores)
-
-	
-	saver = tf.Saver(model.variables)
-	#saver = tfe.Saver(model.variables)
-	saver.save('weights.ckpt')
 	'''
+
