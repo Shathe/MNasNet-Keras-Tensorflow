@@ -21,30 +21,46 @@ class Mnasnet(tf.keras.Model):
 		self.bn2_block1 = layers.BatchNormalization(epsilon=1e-3, momentum=0.999)
 
 		# MBConv3 3x3
-		self.blocks.append(MBConv_idskip(input_filters=16*alpha, filters=24, kernel_size=3, strides=2, filters_multiplier=3, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=24*alpha, filters=24, kernel_size=3, strides=1, filters_multiplier=3, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=24*alpha, filters=24, kernel_size=3, strides=1, filters_multiplier=3, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=16*alpha, filters=24, kernel_size=3, strides=2, 
+						 filters_multiplier=3, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=24*alpha, filters=24, kernel_size=3, strides=1, 
+						 filters_multiplier=3, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=24*alpha, filters=24, kernel_size=3, strides=1, 
+						 filters_multiplier=3, alpha=alpha))
 
 		# MBConv3 5x5
-		self.blocks.append(MBConv_idskip(input_filters=24*alpha, filters=40, kernel_size=5, strides=2, filters_multiplier=3, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=40*alpha, filters=40, kernel_size=5, strides=1, filters_multiplier=3, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=40*alpha, filters=40, kernel_size=5, strides=1, filters_multiplier=3, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=24*alpha, filters=40, kernel_size=5, strides=2, 
+						 filters_multiplier=3, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=40*alpha, filters=40, kernel_size=5, strides=1, 
+						 filters_multiplier=3, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=40*alpha, filters=40, kernel_size=5, strides=1, 
+						 filters_multiplier=3, alpha=alpha))
 		# MBConv6 5x5
-		self.blocks.append(MBConv_idskip(input_filters=40*alpha, filters=80, kernel_size=5, strides=2, filters_multiplier=6, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=80*alpha, filters=80, kernel_size=5, strides=1, filters_multiplier=6, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=80*alpha, filters=80, kernel_size=5, strides=1, filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=40*alpha, filters=80, kernel_size=5, strides=2, 
+						 filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=80*alpha, filters=80, kernel_size=5, strides=1, 
+						 filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=80*alpha, filters=80, kernel_size=5, strides=1, 
+						 filters_multiplier=6, alpha=alpha))
 
 		# MBConv6 3x3
-		self.blocks.append(MBConv_idskip(input_filters=80*alpha, filters=96, kernel_size=3, strides=1, filters_multiplier=6, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=96*alpha, filters=96, kernel_size=3, strides=1, filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=80*alpha, filters=96, kernel_size=3, strides=1, 
+						 filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=96*alpha, filters=96, kernel_size=3, strides=1, 
+						 filters_multiplier=6, alpha=alpha))
 
 		# MBConv6 5x5
-		self.blocks.append(MBConv_idskip(input_filters=96*alpha, filters=192, kernel_size=5, strides=2, filters_multiplier=6, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=192*alpha, filters=192, kernel_size=5, strides=1, filters_multiplier=6, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=192*alpha, filters=192, kernel_size=5, strides=1, filters_multiplier=6, alpha=alpha))
-		self.blocks.append(MBConv_idskip(input_filters=192*alpha, filters=192, kernel_size=5, strides=1, filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=96*alpha, filters=192, kernel_size=5, strides=2, 
+						 filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=192*alpha, filters=192, kernel_size=5, strides=1, 
+						 filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=192*alpha, filters=192, kernel_size=5, strides=1, 
+						 filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=192*alpha, filters=192, kernel_size=5, strides=1, 
+						 filters_multiplier=6, alpha=alpha))
 		# MBConv6 3x3
-		self.blocks.append(MBConv_idskip(input_filters=192*alpha, filters=320, kernel_size=3, strides=1, filters_multiplier=6, alpha=alpha))
+		self.blocks.append(MBConv_idskip(input_filters=192*alpha, filters=320, kernel_size=3, strides=1, 
+						 filters_multiplier=6, alpha=alpha))
 
 		# Last convolution
 		self.conv_last = conv(filters=1152*alpha, kernel_size=1, strides=1)
@@ -103,8 +119,8 @@ def conv(filters, kernel_size, strides=1):
 								kernel_regularizer=regularizers.l2(l=0.0003))
 # Depthwise convolution
 def depthwiseConv(kernel_size, strides=1, depth_multiplier=1):
-	return layers.DepthwiseConv2D(kernel_size, strides=strides, depth_multiplier=depth_multiplier,
-								padding='same', use_bias=False, kernel_regularizer=regularizers.l2(l=0.0003))
+	return layers.DepthwiseConv2D(kernel_size, strides=strides, depth_multiplier=depth_multiplier, 
+				      padding='same', use_bias=False, kernel_regularizer=regularizers.l2(l=0.0003))
 
 class MBConv_idskip(tf.keras.Model):
 
