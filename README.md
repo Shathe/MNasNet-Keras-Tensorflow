@@ -13,6 +13,10 @@ Train the [MNasNet model](https://github.com/Shathe/MNasNet-Keras-Tensorflow/blo
 ```
 python train.py
 ```
+For checking and inspecting the Mnasnet model described in the paper, execute:
+```
+python Mnasnet.py
+```
 
 
 
