@@ -30,28 +30,34 @@ def get_params(model):
 
 
 # Trains the model for certains epochs on a dataset
-def train(dset_train, model, epochs=5):
+def train(dset_train, dset_test, model, epochs=5, show_loss=False):
+
 	for epoch in xrange(epochs):
 		print('epoch: '+ str(epoch))
 		for x, y in dset_train: # for every batch
 			with tf.GradientTape() as g:
 				y_ = model(x, training=True)
 				loss = tf.losses.softmax_cross_entropy(y, y_)
-				print('Training loss: ' + str(loss.numpy()))
+				if show_loss: print('Training loss: ' + str(loss.numpy()))
 
 			# Gets gradients and applies them
 			grads = g.gradient(loss, model.variables)
 			optimizer.apply_gradients(zip(grads, model.variables))
 
+		train_acc = get_accuracy(dset_train, model, training=True)
+		test_acc = get_accuracy(dset_test, model)
+		print('Train accuracy: ' + str(train_acc))
+		print('Test accuracy: ' + str(test_acc))
+
+
 # Tests the model on a dataset
-def test(dset_test, model):
+def get_accuracy(dset_test, model, training=False):
+	accuracy = tfe.metrics.Accuracy()
 	for x, y in dset_test: # for every batch
-		y_ = model(x, training=False)
+		y_ = model(x, training=training)
 		accuracy(tf.argmax(y, 1), tf.argmax(y_, 1))
 
-	# Print the accuracy
-	print('Accuracy: ' + str(accuracy.result().numpy()))
-	get_params(model)
+	return accuracy.result().numpy()
 
 if __name__ == "__main__":
 
@@ -93,12 +99,14 @@ if __name__ == "__main__":
 
 	# Initialize the metric
 	accuracy = tfe.metrics.Accuracy()
+
  
  	# optimizer
 	optimizer = tf.train.AdamOptimizer(0.001)
 
-	train(dset_train, model, epochs=epochs)
-	test(dset_test, model)
+	train(dset_train=dset_train, dset_test=dset_test, model=model, epochs=epochs)
+	get_params(model)
+
 
 	'''
 	You can olso optimize with only:
