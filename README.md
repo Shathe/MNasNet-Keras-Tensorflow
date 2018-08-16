@@ -18,6 +18,7 @@ python train.py
 
 ## Train in eager execution
 Train the [MNasNet (eager) model](https://github.com/Shathe/MNasNet-Keras-Tensorflow/blob/master/MnasnetEager.py) on the MNIST dataset! just execute:
+
 ```
 python train_eager.py
 ```
