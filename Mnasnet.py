@@ -71,8 +71,9 @@ def conv_bn(x, filters, kernel_size,  strides=1, alpha=1, activation=True):
 	return x
 
 # Depth-wise Separable Convolution with batch normalization 
-def depthwiseSepConv_bn(x, depth_multiplier, kernel_size,  strides=1):
-	"""Depthwise separable convolution 
+def depthwiseConv_bn(x, depth_multiplier, kernel_size,  strides=1):
+	""" Depthwise convolution 
+	The DepthwiseConv2D is just the first step of the Depthwise Separable convolution (without the pointwise step).
 	Depthwise Separable convolutions consists in performing just the first step in a depthwise spatial convolution 
 	(which acts on each input channel separately).
 	
@@ -112,7 +113,7 @@ def sepConv_bn_noskip(x, filters, kernel_size,  strides=1):
 		Output tensor.
 	"""
 
-	x = depthwiseSepConv_bn(x, depth_multiplier=1, kernel_size=kernel_size, strides=strides)
+	x = depthwiseConv_bn(x, depth_multiplier=1, kernel_size=kernel_size, strides=strides)
 	x = conv_bn(x, filters=filters, kernel_size=1, strides=1)
 
 	return x
@@ -140,7 +141,7 @@ def MBConv_idskip(x_input, filters, kernel_size,  strides=1, filters_multiplier=
 	pointwise_conv_filters = _make_divisible(filters * alpha)
 
 	x = conv_bn(x_input, filters=depthwise_conv_filters * filters_multiplier, kernel_size=1, strides=1)
-	x = depthwiseSepConv_bn(x, depth_multiplier=1, kernel_size=kernel_size, strides=strides)
+	x = depthwiseConv_bn(x, depth_multiplier=1, kernel_size=kernel_size, strides=strides)
 	x = conv_bn(x, filters=pointwise_conv_filters, kernel_size=1, strides=1, activation=False)
 
 	# Residual connection if possible

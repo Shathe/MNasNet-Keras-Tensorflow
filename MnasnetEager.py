@@ -12,14 +12,12 @@ class Mnasnet(tf.keras.Model):
 
 		self.conv_bn_initial = Conv_BN(filters=32*alpha, kernel_size=3, strides=2)
 
-
 		# Frist block (non-identity) Conv+ DepthwiseConv
 		self.conv1_block1 = depthwiseConv(depth_multiplier=1, kernel_size=3, strides=1)
 		self.bn1_block1 = layers.BatchNormalization(epsilon=1e-3, momentum=0.999)
 		self.relu1_block1 = layers.ReLU(max_value=6)
 
 		self.conv_bn_block_1 = Conv_BN(filters=16*alpha, kernel_size=1, strides=1)
-
 
 		# MBConv3 3x3
 		self.blocks.append(MBConv_idskip(input_filters=16*alpha, filters=24, kernel_size=3, strides=2, 
@@ -90,6 +88,9 @@ class Mnasnet(tf.keras.Model):
 		out = self.avg_pool(out)
 		out = self.fc(out)
 		
+		'''
+		You could return several outputs, even intermediate outputs
+		'''
 		return out
 
 
@@ -163,14 +164,18 @@ class Conv_BN(tf.keras.Model):
 		return x
 
 # convolution
-def conv(filters, kernel_size, strides=1):
-	return layers.Conv2D(filters, kernel_size, strides=strides, padding='same', use_bias=False,
-								kernel_regularizer=regularizers.l2(l=0.0003))
-# Depthwise convolution
-def depthwiseConv(kernel_size, strides=1, depth_multiplier=1):
-	return layers.DepthwiseConv2D(kernel_size, strides=strides, depth_multiplier=depth_multiplier, 
-				      padding='same', use_bias=False, kernel_regularizer=regularizers.l2(l=0.0003))
+def conv(filters, kernel_size, strides=1, dilation_rate=1, use_bias=False):
+	return layers.Conv2D(filters, kernel_size, strides=strides, padding='same', use_bias=use_bias,
+								kernel_regularizer=regularizers.l2(l=0.0003), dilation_rate=dilation_rate)
 
+
+# Depthwise convolution
+def depthwiseConv(kernel_size, strides=1, depth_multiplier=1, dilation_rate=1, use_bias=False):
+	return layers.DepthwiseConv2D(kernel_size, strides=strides, depth_multiplier=depth_multiplier, 
+				      padding='same', use_bias=use_bias, kernel_regularizer=regularizers.l2(l=0.0003),
+				      dilation_rate=dilation_rate)
+
+# dilation_rate
 
 
 # This function is taken from the original tf repo.

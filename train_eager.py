@@ -8,6 +8,8 @@ tf.enable_eager_execution()
 tf.set_random_seed(0)
 np.random.seed(0)
 
+
+
 # Define the loss function
 def loss_function(model, x, y, training=True):
 	y_ = model(x, training=training)
@@ -28,6 +30,13 @@ def get_params(model):
 		total_parameters += variable_parameters
 	print("Total parameters of the net: " + str(total_parameters)+ " == " + str(total_parameters/1000000.0) + "M")
 
+# Returns a pretrained model (can be used in eager execution)
+def get_pretrained_model(num_classes, input_shape=(224, 224, 3)):
+	model = tf.keras.applications.ResNet50(input_shape=input_shape, include_top=False, weights='imagenet')
+	logits = tf.keras.layers.Dense(num_classes, name='fc')(model.output)
+	model = tf.keras.models.Model(model.inputs, logits)
+	return model
+		
 
 # Trains the model for certains epochs on a dataset
 def train(dset_train, dset_test, model, epochs=5, show_loss=False):
@@ -100,13 +109,11 @@ if __name__ == "__main__":
 	# Initialize the metric
 	accuracy = tfe.metrics.Accuracy()
 
- 
  	# optimizer
 	optimizer = tf.train.AdamOptimizer(0.001)
 
 	train(dset_train=dset_train, dset_test=dset_test, model=model, epochs=epochs)
 	get_params(model)
-
 
 	'''
 	You can olso optimize with only:
