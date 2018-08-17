@@ -106,9 +106,6 @@ if __name__ == "__main__":
 	# build model and optimizer
 	model = MnasnetEager.Mnasnet(num_classes=10)
 
-	# Initialize the metric
-	accuracy = tfe.metrics.Accuracy()
-
  	# optimizer
 	optimizer = tf.train.AdamOptimizer(0.001)
 
