@@ -9,7 +9,6 @@ tf.set_random_seed(0)
 np.random.seed(0)
 
 
-
 # Define the loss function
 def loss_function(model, x, y, training=True):
 	y_ = model(x, training=training)
@@ -68,6 +67,18 @@ def get_accuracy(dset_test, model, training=False):
 
 	return accuracy.result().numpy()
 
+
+def restore_state(saver, checkpoint):
+	try:
+		saver.restore(checkpoint)
+		print('Model loaded')
+	except Exception:
+		print('Model not loaded')
+
+
+def init_model(model, input_shape):
+	model._set_inputs(np.zeros(input_shape))
+
 if __name__ == "__main__":
 
 
@@ -76,16 +87,17 @@ if __name__ == "__main__":
 	batch_size = 128
 	epochs = 20
 	num_classes = 10
+	channels= 1
 
 	# Get dataset
 	(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 	# Reshape images
-	x_train = x_train.reshape(-1, image_size, image_size, 1).astype('float32')
-	x_test = x_test.reshape(-1, image_size, image_size, 1).astype('float32')
+	x_train = x_train.reshape(-1, image_size, image_size, channels).astype('float32')
+	x_test = x_test.reshape(-1, image_size, image_size, channels).astype('float32')
 
 	# We are normalizing the images to the range of [-1, 1]
-	x_train = (x_train - 127.5) / 127.5
-	x_test = (x_test - 127.5) / 127.5
+	x_train = x_train / 127.5 - 1
+	x_test = x_test / 127.5 - 1
 
 	# Onehot: from 28,28 to 28,28,n_classes
 	y_train_ohe = tf.one_hot(y_train, depth=num_classes).numpy()
@@ -109,8 +121,23 @@ if __name__ == "__main__":
  	# optimizer
 	optimizer = tf.train.AdamOptimizer(0.001)
 
-	train(dset_train=dset_train, dset_test=dset_test, model=model, epochs=epochs)
+	# Init model
+	init_model(model, input_shape=(batch_size, image_size, image_size, channels))
+	
 	get_params(model)
+	
+	# Init saver 
+	saver_model = tfe.Saver(var_list=model.variables) # can use also ckpt = tfe.Checkpoint(model=model) 
+
+	restore_state(saver_model, 'weights/last_saver')
+
+	train(dset_train=dset_train, dset_test=dset_test, model=model, epochs=epochs)
+	
+	saver_model.save('weights/last_saver')
+
+	
+
+
 
 	'''
 	You can olso optimize with only:
