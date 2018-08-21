@@ -36,36 +36,62 @@ def get_pretrained_model(num_classes, input_shape=(224, 224, 3)):
 	model = tf.keras.models.Model(model.inputs, logits)
 	return model
 		
+# Writes a summary given a tensor
+def write_summary(tensor, writer, name):
+	with tf.contrib.summary.always_record_summaries(): # record_summaries_every_n_global_steps(1)
+		writer.set_as_default()
+		tf.contrib.summary.scalar(name, tensor)
+
 
 # Trains the model for certains epochs on a dataset
 def train(dset_train, dset_test, model, epochs=5, show_loss=False):
+	# Define summary writers and global step for logging
+	writer_train = tf.contrib.summary.create_file_writer('./logs/train')
+	writer_test = tf.contrib.summary.create_file_writer('./logs/test')
+	global_step=tf.train.get_or_create_global_step()  # return global step var
 
 	for epoch in xrange(epochs):
 		print('epoch: '+ str(epoch))
 		for x, y in dset_train: # for every batch
+			global_step.assign_add(1) # add one step per iteration
+
 			with tf.GradientTape() as g:
 				y_ = model(x, training=True)
 				loss = tf.losses.softmax_cross_entropy(y, y_)
+				write_summary(loss, writer_train, 'loss')
 				if show_loss: print('Training loss: ' + str(loss.numpy()))
 
 			# Gets gradients and applies them
 			grads = g.gradient(loss, model.variables)
 			optimizer.apply_gradients(zip(grads, model.variables))
 
+		# Get accuracies
 		train_acc = get_accuracy(dset_train, model, training=True)
-		test_acc = get_accuracy(dset_test, model)
-		print('Train accuracy: ' + str(train_acc))
-		print('Test accuracy: ' + str(test_acc))
+		test_acc = get_accuracy(dset_test, model, writer=writer_test)
+		# write summaries and print
+		write_summary(train_acc, writer_train, 'accuracy')
+		write_summary(test_acc, writer_test, 'accuracy')
+		print('Train accuracy: ' + str(train_acc.numpy()))
+		print('Test accuracy: ' + str(test_acc.numpy()))
 
 
 # Tests the model on a dataset
-def get_accuracy(dset_test, model, training=False):
+def get_accuracy(dset_test, model, training=False,  writer=None):
 	accuracy = tfe.metrics.Accuracy()
+	if writer: loss = [0, 0]
+
 	for x, y in dset_test: # for every batch
 		y_ = model(x, training=training)
 		accuracy(tf.argmax(y, 1), tf.argmax(y_, 1))
 
-	return accuracy.result().numpy()
+		if writer: 
+			loss[0] += tf.losses.softmax_cross_entropy(y, y_)
+			loss[1] += 1.
+
+	if writer:
+		write_summary(tf.convert_to_tensor(loss[0]/loss[1]), writer, 'loss')
+
+	return accuracy.result()
 
 
 def restore_state(saver, checkpoint):
@@ -91,6 +117,7 @@ if __name__ == "__main__":
 
 	# Get dataset
 	(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+
 	# Reshape images
 	x_train = x_train.reshape(-1, image_size, image_size, channels).astype('float32')
 	x_test = x_test.reshape(-1, image_size, image_size, channels).astype('float32')
@@ -118,14 +145,16 @@ if __name__ == "__main__":
 	# build model and optimizer
 	model = MnasnetEager.Mnasnet(num_classes=10)
 
+
  	# optimizer
 	optimizer = tf.train.AdamOptimizer(0.001)
 
-	# Init model
+	# Init model (variables and input shape)
 	init_model(model, input_shape=(batch_size, image_size, image_size, channels))
-	
+
+	# show the number of parametrs of the model
 	get_params(model)
-	
+
 	# Init saver 
 	saver_model = tfe.Saver(var_list=model.variables) # can use also ckpt = tfe.Checkpoint(model=model) 
 
@@ -135,11 +164,11 @@ if __name__ == "__main__":
 	
 	saver_model.save('weights/last_saver')
 
-	
-
 
 
 	'''
+	tensorboard --logdir=train_log:./logs/train
+	
 	You can olso optimize with only:
 	optimizer.minimize(lambda: loss_function(model, x, y, training=True))
 	

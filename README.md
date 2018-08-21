@@ -27,6 +27,12 @@ Train the [MNasNet (eager) model](https://github.com/Shathe/MNasNet-Keras-Tensor
 python train_eager.py
 ```
 
+The eager execution implementation also outputs logs on Tensorboard. For its visualization:
+```
+tensorboard --logdir=train_log:./logs/train, test_log:./logs/test
+```
+
+
 
 
 ![alt text](https://github.com/Shathe/MNasNet-Keras-Tensorflow/raw/master/mnasnet.png)
