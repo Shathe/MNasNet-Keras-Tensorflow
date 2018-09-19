@@ -33,7 +33,7 @@ tensorboard --logdir=train_log:./logs/train, test_log:./logs/test
 ```
 
 ## MnasNet for... Semantic Segmentation!
-In this other repository, [FC-Mnasnet](https://github.com/Shathe/FC-Mnasnet) I added a decoder to the MnasNet architecture in order to turn it into a semantic segmentation model.
+In this other repository, [FC-Mnasnet](https://github.com/Shathe/Semantic-Segmentation-Tensorflow-Eager) I added a decoder to the MnasNet architecture in order to turn it into a semantic segmentation model.
 
 
 
