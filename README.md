@@ -2,7 +2,7 @@
 [Keras (Tensorflow) Implementation](https://github.com/Shathe/MNasNet-Keras-Tensorflow/blob/master/Mnasnet.py) of MNasNet and an example for training and evaluating it on the MNIST dataset. 
 Check also the [eager execution implementation](https://github.com/Shathe/MNasNet-Keras-Tensorflow/blob/master/MnasnetEager.py)
 
-Accordint to the paper: [MnasNet: Platform-Aware Neural Architecture Search for Mobile](https://arxiv.org/pdf/1807.11626.pdf)
+According to the paper: [MnasNet: Platform-Aware Neural Architecture Search for Mobile](https://arxiv.org/pdf/1807.11626.pdf)
 
 ## Requirement
 * Python 2.7+
